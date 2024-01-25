@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <script>
+      const getAnimesData = new XMLHttpRequest();
+
+      getAnimesData.open('GET', 'https://api.jikan.moe/v4/top/anime');
+
+      getAnimesData.responseType = 'json';
+
+     
+      getAnimesData.onload = () => {
+        const highScoreAnimes = getAnimesData.response.data.filter((anime) => anime.score > 9);
+
+        const mainSection = document.createElement('div');
+        mainSection.classList.add('main_section');
+        document.body.prepend(mainSection);
+
+        highScoreAnimes.forEach((anime) => {
+          // Criação de uma div que irá conter a imagem e o título
+          const animeContainer = document.createElement('div');
+          animeContainer.classList.add('anime_container');
+          mainSection.appendChild(animeContainer);
+
+          const image = document.createElement('img');
+          image.setAttribute('src', anime.images.jpg.image_url);
+          image.classList.add('anime_image');
+          animeContainer.appendChild(image);
+
+          const animeTitle = document.createElement('h6');
+          animeTitle.innerHTML= `${anime.title}`;
+          animeContainer.appendChild(animeTitle);
+
+          const infoContainer = document.createElement('div');
+          infoContainer.classList.add('info_container');
+          document.body.append(infoContainer);
+
+          const textDiv = document.createElement('div');
+          textDiv.classList.add('text_div');
+          infoContainer.appendChild(textDiv);
+
+          const imageDiv = document.createElement('div');
+          imageDiv.classList.add('image_div');
+          infoContainer.appendChild(imageDiv);
+          
+          const titleInfoElement = document.createElement('p');
+          titleInfoElement.innerHTML= `Name: ${anime.title}`;
+          textDiv.appendChild(titleInfoElement);
+
+          const ratingInfoElement = document.createElement('p');
+          ratingInfoElement.innerHTML = `Rating: ${anime.rating}`;
+          textDiv.appendChild(ratingInfoElement);
+
+          const dateInfoElement = document.createElement('p');
+          dateInfoElement.innerHTML = `Date of Release: ${anime.year}`;
+          textDiv.appendChild(dateInfoElement);
+
+          const genreNames = anime.genres.map((genre) => genre.name).join(' , ');
+          const genreInfoElement = document.createElement('p');
+          genreInfoElement.innerHTML = `Genre: ${genreNames}`;
+          textDiv.appendChild(genreInfoElement);
+
+          const imageInfoElement = document.createElement('img');
+          imageInfoElement.setAttribute('src', anime.images.jpg.image_url);
+          imageDiv.appendChild(imageInfoElement);
+        });
+        const allImages = document.querySelectorAll('.anime_image');
+        const allInfoContainers = document.querySelectorAll('.info_container');
+        
+        allImages.forEach((image, index) => {
+          image.onclick = () => {
+            const activeContainers = document.querySelectorAll('.show');
+            activeContainers.forEach((container) => container.classList.remove('show'));
+            allInfoContainers[index].classList.add('show');
+          };
+        });
+        allInfoContainers.forEach((container) => {
+          container.onclick = () => {
+            const activeContainers = document.querySelectorAll('.show');
+            activeContainers.forEach((container) => container.classList.remove('show'));
+          };
+        });
+      };
+
+    getAnimesData.send();
+
+    
+
+      
+
+  </script>
+</body>
+</html>
